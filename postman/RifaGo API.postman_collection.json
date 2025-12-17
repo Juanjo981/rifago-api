@@ -1,0 +1,666 @@
+{
+	"info": {
+		"_postman_id": "ab401524-eb78-470d-aa8f-a957f217230b",
+		"name": "RifaGo API",
+		"description": "Colección completa de endpoints para RifaGo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28734246"
+	},
+	"item": [
+		{
+			"name": "Admin Auth",
+			"item": [
+				{
+					"name": "Register Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Juan\",\n  \"telefono\": \"3921290528\",\n  \"email\": \"admin@rifago.com\",\n  \"username\": \"admin\",\n  \"password\": \"123456\",\n  \"inviteCode\": \"rifago_admin_dev_2025\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"token\", \"Bearer \" + pm.response.json().token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rifas (Admin)",
+			"item": [
+				{
+					"name": "Crear Rifa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"codigo\": \"RIFA123\",\n  \"titulo\": \"Rifa iPhone\",\n  \"descripcion\": \"Rifa demo\",\n  \"fechaRifa\": \"2025-12-31T20:00:00\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/rifas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"rifas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar Rifa",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"titulo\": \"Rifa iPhone Pro\",\n  \"descripcion\": \"Actualizada\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/rifas/{{rifaId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"rifas",
+								"{{rifaId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Rifas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/rifas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"rifas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detalle Rifa",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/rifas/{{rifaId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"rifas",
+								"{{rifaId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Abrir Rifa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/rifas/{{rifaId}}/abrir",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"rifas",
+								"{{rifaId}}",
+								"abrir"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finalizar Rifa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/rifas/{{rifaId}}/finalizar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"rifas",
+								"{{rifaId}}",
+								"finalizar"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Premios (Admin)",
+			"item": [
+				{
+					"name": "Crear Premio",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"iPhone 15\",\n  \"descripcion\": \"Nuevo\",\n  \"precio\": 25000\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/rifas/{{rifaId}}/premios",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"rifas",
+								"{{rifaId}}",
+								"premios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar Premio",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"iPhone 15 Pro\",\n  \"precio\": 27000\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/premios/{{premioId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"premios",
+								"{{premioId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Premio",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/premios/{{premioId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"premios",
+								"{{premioId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Premios por Rifa",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/rifas/{{rifaId}}/premios",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"rifas",
+								"{{rifaId}}",
+								"premios"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Participantes (Público)",
+			"item": [
+				{
+					"name": "Info Pública Rifa",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/public/rifas/{{codigo}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"rifas",
+								"{{codigo}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registrar Participante",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Luis\",\n  \"telefono\": \"33212244321\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/public/rifas/{{codigo}}/participantes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"rifas",
+								"{{codigo}}",
+								"participantes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sorteo (Admin)",
+			"item": [
+				{
+					"name": "Iniciar Sorteo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/rifas/{{rifaId}}/sorteo/iniciar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"rifas",
+								"{{rifaId}}",
+								"sorteo",
+								"iniciar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Configurar Premio",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"salidas\": 4,\n  \"ganadorEn\": 3\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/sorteo/{{sesionId}}/premio/{{premioId}}/config",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"sorteo",
+								"{{sesionId}}",
+								"premio",
+								"{{premioId}}",
+								"config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Siguiente Participante",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/sorteo/{{sesionId}}/premio/{{premioId}}/siguiente",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"sorteo",
+								"{{sesionId}}",
+								"premio",
+								"{{premioId}}",
+								"siguiente"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pausar Premio (opcional)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/sorteo/{{sesionId}}/premio/{{premioId}}/pausar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"sorteo",
+								"{{sesionId}}",
+								"premio",
+								"{{premioId}}",
+								"pausar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finalizar Sorteo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/rifas/{{rifaId}}/sorteo/finalizar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"rifas",
+								"{{rifaId}}",
+								"sorteo",
+								"finalizar"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Resumen",
+			"item": [
+				{
+					"name": "Resumen Público",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/public/rifas/{{codigo}}/resumen",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"rifas",
+								"{{codigo}}",
+								"resumen"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resumen Admin",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/rifas/{{rifaId}}/resumen",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"rifas",
+								"{{rifaId}}",
+								"resumen"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "rifaId",
+			"value": "1"
+		},
+		{
+			"key": "codigo",
+			"value": "ABC123"
+		},
+		{
+			"key": "premioId",
+			"value": "1"
+		},
+		{
+			"key": "sesionId",
+			"value": "1"
+		}
+	]
+}
