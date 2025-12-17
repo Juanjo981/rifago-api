@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: rifago-api
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rifago
+    username: 'postgres'
+    password: '12345'
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate   # IMPORTANTE: ya tienes DDL hecho
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: rifago
+
+  jackson:
+    time-zone: America/Mexico_City
+
+# =========================
+# JWT Security
+# =========================
+security:
+  jwt:
+    secret: ${JWT_SECRET:rifago_dev_jwt_secret_super_largo_32_chars_min_ok}
+    expiration-ms: 28800000
+
+
+  admin:
+    invite-code: ${ADMIN_INVITE_CODE:rifago_admin_dev_2025}
+
+# =========================
+# Swagger / OpenAPI
+# =========================
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
