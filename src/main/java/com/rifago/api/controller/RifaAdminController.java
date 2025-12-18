@@ -1,7 +1,9 @@
 package com.rifago.api.controller;
 
+import com.rifago.api.dto.participante.ParticipanteAdminResponse;
 import com.rifago.api.dto.rifa.*;
 import com.rifago.api.security.SecurityUtils;
+import com.rifago.api.service.ParticipanteService;
 import com.rifago.api.service.RifaAdminService;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.responses.*;
@@ -13,6 +15,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -23,7 +26,7 @@ public class RifaAdminController {
 
     private final RifaAdminService rifaAdminService;
 
-
+    private final ParticipanteService participanteService;
 
     @PostMapping
     @Operation(summary = "Crear rifa")
@@ -83,4 +86,45 @@ public class RifaAdminController {
         rifaAdminService.finalizarRifa(adminId, rifaId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{rifaId}/participantes")
+    @Operation(
+            summary = "Listar participantes de una rifa",
+            description = "Obtiene todos los participantes registrados en una rifa del administrador"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Participantes obtenidos correctamente"),
+            @ApiResponse(responseCode = "403", description = "No autorizado"),
+            @ApiResponse(responseCode = "404", description = "Rifa no encontrada")
+    })
+    public ResponseEntity<List<ParticipanteAdminResponse>> listarParticipantes(
+            @PathVariable Long rifaId
+    ) {
+        Long adminId = SecurityUtils.getAdminId();
+        return ResponseEntity.ok(
+                participanteService.listarPorRifa(adminId, rifaId)
+        );
+    }
+
+    @GetMapping("/{rifaId}/participantes/count")
+    @Operation(
+            summary = "Contar participantes de una rifa",
+            description = "Obtiene el total de participantes registrados en una rifa"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Conteo obtenido correctamente"),
+            @ApiResponse(responseCode = "403", description = "No autorizado"),
+            @ApiResponse(responseCode = "404", description = "Rifa no encontrada")
+    })
+    public ResponseEntity<Map<String, Long>> contarParticipantes(
+            @PathVariable Long rifaId
+    ) {
+        Long adminId = SecurityUtils.getAdminId();
+        long total = participanteService.contarPorRifa(adminId, rifaId);
+
+        return ResponseEntity.ok(
+                Map.of("total", total)
+        );
+    }
+
 }

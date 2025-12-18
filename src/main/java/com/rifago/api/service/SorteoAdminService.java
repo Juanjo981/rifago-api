@@ -20,4 +20,12 @@ public interface SorteoAdminService {
     );
 
     void finalizarSorteo(Long adminId, Long rifaId);
+
+    SorteoEstadoResponse obtenerEstadoActual(Long rifaId);
+
+    void configurarPremio(
+            Long sesionId,
+            Long premioId,
+            ConfigurarPremioRequest request
+    );
 }

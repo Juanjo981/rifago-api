@@ -13,6 +13,10 @@ public interface ParticipanteRepository extends JpaRepository<Participante, Long
 
     List<Participante> findByRifaId(Long rifaId);
 
+    List<Participante> findByRifaIdOrderByCreatedAtAsc(Long rifaId);
+
+    long countByRifaId(Long rifaId);
+
     Optional<Participante> findByRifaIdAndTelefono(Long rifaId, String telefono);
 
     @Query(value = """

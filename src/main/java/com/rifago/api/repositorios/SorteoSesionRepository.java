@@ -11,4 +11,5 @@ public interface SorteoSesionRepository extends JpaRepository<SorteoSesion, Long
     Optional<SorteoSesion> findByRifaIdAndEstado(Long rifaId, SorteoEstado estado);
 
     boolean existsByRifaIdAndEstado(Long rifaId, SorteoEstado estado);
+
 }

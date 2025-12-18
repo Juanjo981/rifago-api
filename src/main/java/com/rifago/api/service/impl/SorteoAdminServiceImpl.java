@@ -22,6 +22,7 @@ public class SorteoAdminServiceImpl implements SorteoAdminService {
     private final SorteoSesionRepository sorteoSesionRepository;
     private final SorteoEventoRepository sorteoEventoRepository;
     private final ParticipanteRepository participanteRepository;
+    private final SorteoPremioConfigRepository sorteoPremioConfigRepository;
 
     // Config temporal por premio (sesion-premio)
     private final Map<String, PremioConfigRequest> premioConfigMap = new HashMap<>();
@@ -164,6 +165,120 @@ public class SorteoAdminServiceImpl implements SorteoAdminService {
 
         rifa.setEstado(RifaEstado.FINALIZADA);
         rifaRepository.save(rifa);
+    }
+
+    @Override
+    public SorteoEstadoResponse obtenerEstadoActual(Long rifaId) {
+
+        Rifa rifa = rifaRepository.findById(rifaId)
+                .orElseThrow(() -> new RuntimeException("Rifa no encontrada"));
+
+        if (rifa.getEstado() != RifaEstado.EN_SORTEO) {
+            return SorteoEstadoResponse.builder()
+                    .rifaId(rifa.getId())
+                    .rifaEstado(rifa.getEstado())
+                    .build();
+        }
+
+        SorteoSesion sesion = sorteoSesionRepository
+                .findByRifaIdAndEstado(rifaId, SorteoEstado.ACTIVA)
+                .orElseThrow(() -> new RuntimeException("No hay sesión activa"));
+
+        List<Premio> premios =
+                premioRepository.findByRifaIdOrderByPrecioAsc(rifaId);
+
+        for (int i = 0; i < premios.size(); i++) {
+            Premio premio = premios.get(i);
+
+            // CONFIG DEL PREMIO
+            Optional<SorteoPremioConfig> configOpt =
+                    sorteoPremioConfigRepository
+                            .findBySorteoSesionIdAndPremioId(
+                                    sesion.getId(),
+                                    premio.getId()
+                            );
+
+            boolean premioConfigurado = configOpt.isPresent();
+            SorteoPremioConfig config = configOpt.orElse(null);
+
+            // EVENTOS
+            boolean ganadorDefinido =
+                    sorteoEventoRepository
+                            .existsBySorteoSesionIdAndPremioIdAndEsGanadorTrue(
+                                    sesion.getId(), premio.getId()
+                            );
+
+            int salidasActuales =
+                    (int) sorteoEventoRepository
+                            .countBySorteoSesionIdAndPremioId(
+                                    sesion.getId(), premio.getId()
+                            );
+
+            if (!ganadorDefinido) {
+                return SorteoEstadoResponse.builder()
+                        .rifaId(rifa.getId())
+                        .rifaEstado(rifa.getEstado())
+                        .sesionId(sesion.getId())
+                        .sorteoEstado(sesion.getEstado())
+
+                        .premioId(premio.getId())
+                        .premioNombre(premio.getNombre())
+                        .ordenPremio(i + 1)
+
+                        .premioConfigurado(premioConfigurado)
+                        .totalSalidas(config != null ? config.getTotalSalidas() : null)
+                        .ganadorEn(config != null ? config.getGanadorEn() : null)
+
+                        .salidaActual(salidasActuales)
+                        .ganadorYaDefinido(false)
+
+                        .puedeConfigurarPremio(!premioConfigurado)
+                        .puedeRevelarParticipante(premioConfigurado && !ganadorDefinido)
+                        .puedeFinalizarSorteo(false)
+                        .build();
+            }
+        }
+
+        // TODOS LOS PREMIOS TERMINADOS
+        return SorteoEstadoResponse.builder()
+                .rifaId(rifaId)
+                .rifaEstado(RifaEstado.EN_SORTEO)
+                .sesionId(sesion.getId())
+                .sorteoEstado(sesion.getEstado())
+                .puedeFinalizarSorteo(true)
+                .build();
+    }
+
+
+    @Override
+    public void configurarPremio(
+            Long sesionId,
+            Long premioId,
+            ConfigurarPremioRequest request
+    ) {
+        SorteoSesion sesion = sorteoSesionRepository.findById(sesionId)
+                .orElseThrow(() -> new RuntimeException("Sesión no encontrada"));
+
+        Premio premio = premioRepository.findById(premioId)
+                .orElseThrow(() -> new RuntimeException("Premio no encontrado"));
+
+        if (sorteoPremioConfigRepository
+                .existsBySorteoSesionIdAndPremioId(sesionId, premioId)) {
+            throw new RuntimeException("Este premio ya fue configurado");
+        }
+
+        if (request.getGanadorEn() > request.getTotalSalidas()) {
+            throw new RuntimeException("GanadorEn no puede ser mayor que totalSalidas");
+        }
+
+        SorteoPremioConfig config = SorteoPremioConfig.builder()
+                .sorteoSesion(sesion)
+                .premio(premio)
+                .totalSalidas(request.getTotalSalidas())
+                .ganadorEn(request.getGanadorEn())
+                .build();
+
+        sorteoPremioConfigRepository.save(config);
     }
 
     // ======================

@@ -19,4 +19,15 @@ public interface SorteoEventoRepository extends JpaRepository<SorteoEvento, Long
 
     List<SorteoEvento> findByPremioIdOrderByIndiceSalidaAsc(Long premioId);
 
+    List<SorteoEvento> findBySorteoSesionIdAndPremioIdOrderByIndiceSalidaAsc(
+            Long sesionId,
+            Long premioId
+    );
+
+    boolean existsBySorteoSesionIdAndPremioIdAndEsGanadorTrue(
+            Long sesionId,
+            Long premioId
+    );
+
+
 }
