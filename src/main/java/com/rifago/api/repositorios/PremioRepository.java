@@ -12,4 +12,6 @@ public interface PremioRepository extends JpaRepository<Premio, Long> {
     List<Premio> findByRifaId(Long rifaId);
 
     boolean existsByRifaIdAndNombre(Long rifaId, String nombre);
+
+    boolean existsByRifaIdAndGanadorIsNull(Long rifaId);
 }

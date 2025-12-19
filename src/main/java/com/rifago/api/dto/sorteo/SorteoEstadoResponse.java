@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -22,7 +24,8 @@ public class SorteoEstadoResponse {
     // Premio actual
     private Long premioId;
     private String premioNombre;
-    private Integer ordenPremio; // 1,2,3...
+    private Integer ordenPremio;
+    private BigDecimal premioPrecio;// 1,2,3...
     private Boolean premioConfigurado;
 
     // Configuración
@@ -37,5 +40,9 @@ public class SorteoEstadoResponse {
     private Boolean puedeConfigurarPremio;
     private Boolean puedeRevelarParticipante;
     private Boolean puedeFinalizarSorteo;
+
+    private Long ganadorId;
+    private String ganadorNombre;
+
 }
 
